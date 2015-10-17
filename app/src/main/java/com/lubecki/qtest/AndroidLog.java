@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qexample;
+package com.lubecki.qtest;
 
 import android.util.Log;
 import com.lubecki.q.logging.DefaultLog;

@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qexample.players;
+package com.lubecki.qtest.players;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
@@ -31,22 +31,20 @@ import com.lubecki.q.playback.PlayerState;
 import java.io.IOException;
 
 /**
- * This is cool because its a very simple implementation of a {@link MediaPlayer}. Only bare minimum
- * state handling is needed to turn regular media player code into something the Q can use.
+ * See {@link FileAudioPlayerSimple} for a improved documentation.
+ * The implementations are identical.
  */
-public class FileAudioPlayerSimple extends Player {
+public class WebAudioPlayerSimple extends Player {
 
   private final MediaPlayer player;
 
-  public FileAudioPlayerSimple(PlayerEventCallback callback) {
+  public WebAudioPlayerSimple(PlayerEventCallback callback) {
     super(callback);
     player = new MediaPlayer();
   }
 
   @Override public void prepare(String s) {
     try {
-      changeState(PlayerState.PREPARING);
-
       player.reset();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
       player.setDataSource(s);
@@ -55,11 +53,13 @@ public class FileAudioPlayerSimple extends Player {
           notifyIfPrepared();
         }
       });
+
       player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         @Override public void onCompletion(MediaPlayer mediaPlayer) {
           notifyIfTrackEnded();
         }
       });
+      changeState(PlayerState.PREPARING);
       player.prepareAsync();
     } catch (IOException e) {
       e.printStackTrace();
@@ -68,23 +68,22 @@ public class FileAudioPlayerSimple extends Player {
 
   @Override public void justPrepare(String s) {
     try {
-      changeState(PlayerState.PREPARING);
-
       player.reset();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
       player.setDataSource(s);
-
-      // Ready for playback but we don't want to actually start playing.
       player.setOnPreparedListener(new MediaPlayer.OnPreparedListener() {
         @Override public void onPrepared(MediaPlayer mediaPlayer) {
+          // Ready for playback but we don't want to actually start playing.
           changeState(PlayerState.PAUSED);
         }
       });
+
       player.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
         @Override public void onCompletion(MediaPlayer mediaPlayer) {
           notifyIfTrackEnded();
         }
       });
+      changeState(PlayerState.PREPARING);
       player.prepareAsync();
     } catch (IOException e) {
       e.printStackTrace();
@@ -104,8 +103,6 @@ public class FileAudioPlayerSimple extends Player {
   }
 
   @Override public void play() {
-    // Always call the super methods if they exist. This tracks the state of the player, and will
-    // notify you if you have made a mistake in your handling of the state.
     super.play();
     player.start();
   }

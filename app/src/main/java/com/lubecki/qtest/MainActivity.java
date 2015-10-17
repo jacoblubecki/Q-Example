@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qexample;
+package com.lubecki.qtest;
 
 import android.database.Cursor;
 import android.os.Bundle;
@@ -48,10 +48,10 @@ import com.lubecki.q.playback.PlayerEventCallback;
 import com.lubecki.q.playback.PlayerManager;
 import com.lubecki.q.playback.PlayerState;
 
-import com.lubecki.qexample.players.WebAudioPlayerSimple;
-import com.lubecki.qexample.tracks.WebTrack;
-import com.lubecki.qexample.players.FileAudioPlayerSimple;
-import com.lubecki.qexample.tracks.LocalTrack;
+import com.lubecki.qtest.players.WebAudioPlayerSimple;
+import com.lubecki.qtest.tracks.WebTrack;
+import com.lubecki.qtest.players.FileAudioPlayerSimple;
+import com.lubecki.qtest.tracks.LocalTrack;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -147,7 +147,7 @@ public class MainActivity extends AppCompatActivity {
 
   @Override protected void onCreate(Bundle savedInstanceState) {
     super.onCreate(savedInstanceState);
-    setContentView(com.lubecki.qexample.R.layout.activity_main);
+    setContentView(R.layout.activity_main);
 
     prepareViews();
 
@@ -160,11 +160,11 @@ public class MainActivity extends AppCompatActivity {
 
   private void prepareViews() {
 
-    list = (ListView) findViewById(com.lubecki.qexample.R.id.listView);
-    text1 = (TextView) findViewById(com.lubecki.qexample.R.id.text1);
-    text2 = (TextView) findViewById(com.lubecki.qexample.R.id.text2);
-    text3 = (TextView) findViewById(com.lubecki.qexample.R.id.text3);
-    seek = (SeekBar) findViewById(com.lubecki.qexample.R.id.seekBar);
+    list = (ListView) findViewById(R.id.listView);
+    text1 = (TextView) findViewById(R.id.text1);
+    text2 = (TextView) findViewById(R.id.text2);
+    text3 = (TextView) findViewById(R.id.text3);
+    seek = (SeekBar) findViewById(R.id.seekBar);
 
     seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int milliseconds, boolean b) {

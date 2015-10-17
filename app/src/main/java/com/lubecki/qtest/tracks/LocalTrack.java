@@ -21,25 +21,22 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qexample.tracks;
+package com.lubecki.qtest.tracks;
 
 import com.lubecki.q.QTrack;
 
 /**
- * Implementation of {@link QTrack} that we can use to reference our web media URI.
+ * Implementation of {@link QTrack} that we can use to reference our local media URI.
  */
-public class WebTrack extends QTrack {
+public class LocalTrack extends QTrack {
 
-  public static final String URI_PATTERN = "http(.*)(.mp3|.wav)";
+  public static final String URI_PATTERN = "\\/storage(.*)(.mp3|.wav)";
 
-  public WebTrack(int i) {
+  // pretty much all the fields should be overwritten for this one since it's pulling actual song
+  // file data
+  public LocalTrack() {
     title = "Test";
     artist = "Test";
-
-    // This is really bad code but it still gets the point across
-    uri = i == 1
-        ? "http://www.looperman.com/media/loops/1664947/looperman-l-1664947-0088802-dubstepmiddle-dnb-kicks.mp3"
-        : "https://wiki.teamfortress.com/w/images/3/33/Sf12_found05.wav";
     image =
         "http://pre07.deviantart.net/f338/th/pre/f/2012/306/2/f/merasmus_by_nastyov-d5jqosc.png";
   }
