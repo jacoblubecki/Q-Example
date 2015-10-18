@@ -21,26 +21,26 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest.tracks;
+package com.jlubecki.qtest.tracks;
 
 import com.jlubecki.q.MediaType;
 import com.jlubecki.q.QTrack;
 
 /**
- * Created by Jacob on 10/17/15.
+ * Implementation of {@link QTrack} that we can use to reference our local media URI.
  */
-public class WebVideoTrack extends QTrack {
+public class LocalTrack extends QTrack {
 
-  public static final String URI_PATTERN = "http(.*).mp4";
+  public static final String URI_PATTERN = "\\/storage(.*)(.mp3|.wav)";
 
   // pretty much all the fields should be overwritten for this one since it's pulling actual song
   // file data
-  public WebVideoTrack() {
-    title = "Video Test";
-    artist = "Video Artist";
-    uri =
-        "https://ia600401.us.archive.org/19/items/ksnn_compilation_master_the_internet/ksnn_compilation_master_the_internet_512kb.mp4";
+  public LocalTrack() {
+    title = "Test";
+    artist = "Test";
+    imagePath =
+        "http://pre07.deviantart.net/f338/th/pre/f/2012/306/2/f/merasmus_by_nastyov-d5jqosc.png";
 
-    mediaType = MediaType.VIDEO;
+    mediaType = MediaType.AUDIO;
   }
 }

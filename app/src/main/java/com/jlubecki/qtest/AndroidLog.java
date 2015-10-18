@@ -21,26 +21,48 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest.tracks;
+package com.jlubecki.qtest;
 
-import com.jlubecki.q.MediaType;
-import com.jlubecki.q.QTrack;
+import android.util.Log;
+import com.jlubecki.q.logging.DefaultLog;
+import com.jlubecki.q.logging.QLog;
 
 /**
- * Implementation of {@link QTrack} that we can use to reference our local media URI.
+ * Now the Q will log everything using Android's {@link Log} implementation. The majority of logging
+ * in the Q will use the name of the class that does the logging as the tag. Most of the log
+ * messages in the Q are INFO priority.
  */
-public class LocalTrack extends QTrack {
+public class AndroidLog extends DefaultLog {
 
-  public static final String URI_PATTERN = "\\/storage(.*)(.mp3|.wav)";
+  @Override public void log(int priority, String tag, String message) {
+    switch (priority) {
+      case QLog.VERBOSE:
+        Log.v(tag, message);
+        break;
 
-  // pretty much all the fields should be overwritten for this one since it's pulling actual song
-  // file data
-  public LocalTrack() {
-    title = "Test";
-    artist = "Test";
-    imagePath =
-        "http://pre07.deviantart.net/f338/th/pre/f/2012/306/2/f/merasmus_by_nastyov-d5jqosc.png";
+      case QLog.DEBUG:
+        Log.d(tag, message);
+        break;
 
-    mediaType = MediaType.AUDIO;
+      case QLog.INFO:
+        Log.i(tag, message);
+        break;
+
+      case QLog.WARN:
+        Log.w(tag, message);
+        break;
+
+      case QLog.ERROR:
+        Log.e(tag, message);
+        break;
+
+      case QLog.WTF:
+        Log.wtf(tag, message);
+        break;
+
+      default:
+        Log.i(tag, message);
+        break;
+    }
   }
 }

@@ -21,48 +21,29 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest;
+package com.jlubecki.qtest.tracks;
 
-import android.util.Log;
-import com.jlubecki.q.logging.DefaultLog;
-import com.jlubecki.q.logging.QLog;
+import com.jlubecki.q.MediaType;
+import com.jlubecki.q.QTrack;
 
 /**
- * Now the Q will log everything using Android's {@link Log} implementation. The majority of logging
- * in the Q will use the name of the class that does the logging as the tag. Most of the log
- * messages in the Q are INFO priority.
+ * Implementation of {@link QTrack} that we can use to reference our web media URI.
  */
-public class AndroidLog extends DefaultLog {
+public class WebTrack extends QTrack {
 
-  @Override public void log(int priority, String tag, String message) {
-    switch (priority) {
-      case QLog.VERBOSE:
-        Log.v(tag, message);
-        break;
+  public static final String URI_PATTERN = "http(.*)(.mp3|.wav)";
 
-      case QLog.DEBUG:
-        Log.d(tag, message);
-        break;
+  public WebTrack(int i) {
+    title = "Test";
+    artist = "Test Artist";
 
-      case QLog.INFO:
-        Log.i(tag, message);
-        break;
+    // This is really bad code but it still gets the point across
+    uri = i == 1
+        ? "http://www.looperman.com/media/loops/1664947/looperman-l-1664947-0088802-dubstepmiddle-dnb-kicks.mp3"
+        : "https://wiki.teamfortress.com/w/images/3/33/Sf12_found05.wav";
+    imagePath =
+        "http://pre07.deviantart.net/f338/th/pre/f/2012/306/2/f/merasmus_by_nastyov-d5jqosc.png";
 
-      case QLog.WARN:
-        Log.w(tag, message);
-        break;
-
-      case QLog.ERROR:
-        Log.e(tag, message);
-        break;
-
-      case QLog.WTF:
-        Log.wtf(tag, message);
-        break;
-
-      default:
-        Log.i(tag, message);
-        break;
-    }
+    mediaType = MediaType.AUDIO;
   }
 }

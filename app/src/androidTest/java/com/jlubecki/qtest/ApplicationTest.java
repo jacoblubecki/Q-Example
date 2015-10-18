@@ -1,4 +1,4 @@
-package com.lubecki.qtest;
+package com.jlubecki.qtest;
 
 import android.app.Application;
 import android.test.ApplicationTestCase;

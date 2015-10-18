@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest;
+package com.jlubecki.qtest;
 
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -54,12 +54,12 @@ import com.jlubecki.q.playback.Player;
 import com.jlubecki.q.playback.PlayerEventCallback;
 import com.jlubecki.q.playback.PlayerManager;
 import com.jlubecki.q.playback.PlayerState;
-import com.lubecki.qtest.players.WebAudioPlayerSimple;
-import com.lubecki.qtest.players.WebVideoPlayerSimple;
-import com.lubecki.qtest.tracks.WebTrack;
-import com.lubecki.qtest.players.FileAudioPlayerSimple;
-import com.lubecki.qtest.tracks.LocalTrack;
-import com.lubecki.qtest.tracks.WebVideoTrack;
+import com.jlubecki.qtest.players.WebAudioPlayerSimple;
+import com.jlubecki.qtest.players.WebVideoPlayerSimple;
+import com.jlubecki.qtest.tracks.LocalTrack;
+import com.jlubecki.qtest.tracks.WebTrack;
+import com.jlubecki.qtest.players.FileAudioPlayerSimple;
+import com.jlubecki.qtest.tracks.WebVideoTrack;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
@@ -73,6 +73,7 @@ public class MainActivity extends AppCompatActivity {
   private ArrayList<QTrack> trackList = new ArrayList<>();
 
   private ListView list;
+  private TextView playerName;
   private TextView loopShuffleInfo;
   private TextView trackInfo;
   private TextView timeInfo;
@@ -203,6 +204,7 @@ public class MainActivity extends AppCompatActivity {
   private void prepareViews() {
 
     list = (ListView) findViewById(R.id.listView);
+    playerName = (TextView) findViewById(R.id.playerName);
     loopShuffleInfo = (TextView) findViewById(R.id.loopShuffleInfo);
     trackInfo = (TextView) findViewById(R.id.trackInfo);
     timeInfo = (TextView) findViewById(R.id.timeInfo);
@@ -354,8 +356,8 @@ public class MainActivity extends AppCompatActivity {
     // Don't update the UI if the track list is empty, nothing to update.
     if (track != null) {
 
-      trackInfo.setText(String.format("%s\n%s\nPlayer: %s", track.title, track.artist,
-          player.getClass().getSimpleName()));
+      trackInfo.setText(String.format("%s\n%s", track.title, track.artist));
+      playerName.setText(String.format("Player: %s", player.getClass().getSimpleName()));
 
       time = player.getCurrentTime();
 

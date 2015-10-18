@@ -11,6 +11,22 @@
     tools:context=".MainActivity"
     >
 
+  <TextView
+      android:layout_width="wrap_content"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceMedium"
+      android:text="Sample Text"
+      android:id="@+id/playerName"
+      android:paddingBottom="8dp"
+      android:gravity="center"
+      android:textColor="@color/colorPrimaryDark"
+      android:layout_alignParentLeft="true"
+      android:layout_alignParentStart="true"
+      android:layout_alignParentRight="true"
+      android:layout_alignParentEnd="true"
+      android:layout_alignParentTop="true"
+      />
+
   <Button
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
@@ -69,51 +85,51 @@
         android:id="@+id/frame"
         >
     </FrameLayout>
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceSmall"
-          android:text="Text"
-          android:padding="8dp"
-          android:id="@+id/trackInfo"
-          android:gravity="center"
-          android:layout_gravity="right|top"
-          android:layout_alignParentTop="true"
-          android:layout_above="@+id/seekBar"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          android:layout_alignLeft="@+id/seekBar"
-          android:layout_alignStart="@+id/seekBar"
-          />
-      <TextView
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:textAppearance="?android:attr/textAppearanceSmall"
-          android:text="Text"
-          android:id="@+id/timeInfo"
-          android:padding="8dp"
-          android:gravity="center"
-          android:layout_gravity="right|bottom"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          android:layout_alignLeft="@+id/seekBar"
-          android:layout_alignStart="@+id/seekBar"
-          android:layout_alignParentBottom="true"
-          />
-      <SeekBar
-          android:layout_width="168dp"
-          android:layout_height="wrap_content"
-          android:id="@+id/seekBar"
-          android:layout_gravity="right|center_vertical"
-          android:layout_above="@+id/timeInfo"
-          android:layout_alignParentRight="true"
-          android:layout_alignParentEnd="true"
-          android:layout_toRightOf="@+id/frame"
-          android:layout_toEndOf="@+id/frame"
-          />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Text"
+        android:padding="8dp"
+        android:id="@+id/trackInfo"
+        android:gravity="center"
+        android:layout_gravity="right|top"
+        android:layout_alignParentTop="true"
+        android:layout_above="@+id/seekBar"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/seekBar"
+        android:layout_alignStart="@+id/seekBar"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Text"
+        android:id="@+id/timeInfo"
+        android:padding="8dp"
+        android:gravity="center"
+        android:layout_gravity="right|bottom"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_alignLeft="@+id/seekBar"
+        android:layout_alignStart="@+id/seekBar"
+        android:layout_alignParentBottom="true"
+        />
+    <SeekBar
+        android:layout_width="168dp"
+        android:layout_height="wrap_content"
+        android:id="@+id/seekBar"
+        android:layout_gravity="right|center_vertical"
+        android:layout_above="@+id/timeInfo"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/frame"
+        android:layout_toEndOf="@+id/frame"
+        />
   </RelativeLayout>
 
-    <TextView
+  <TextView
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:textAppearance="?android:attr/textAppearanceSmall"
@@ -139,7 +155,7 @@
       android:layout_width="wrap_content"
       android:layout_height="wrap_content"
       android:id="@+id/listView"
-      android:layout_alignParentTop="true"
       android:layout_above="@+id/playerDetails"
+      android:layout_below="@+id/playerName"
       />
 </RelativeLayout>

@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest.players;
+package com.jlubecki.qtest.players;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;

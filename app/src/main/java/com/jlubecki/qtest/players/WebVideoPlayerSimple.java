@@ -21,7 +21,7 @@
  * SOFTWARE.
  */
 
-package com.lubecki.qtest.players;
+package com.jlubecki.qtest.players;
 
 import android.media.MediaPlayer;
 import android.media.session.MediaController;
