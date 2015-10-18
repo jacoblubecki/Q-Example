@@ -10,7 +10,7 @@ need to be solved. It's also kind of cool.
 ## For real though
 
 It simplifies the process of linking together playback from different sources or
-file formats where multiple players are be required.
+file formats where multiple players are required.
 
 #### An example
 
@@ -24,7 +24,7 @@ and the Q will handle the rest.
 ## Why does this matter?
 
 It doesn't that much. There's a few inherent drawbacks (using the same player for
-all tracks would make seamless playback much easier for instance) and it's not
+all tracks would make gapless playback much easier for instance) and it's not
 necessarily that difficult to implement anyways. I thought it would be a cool
 project and now it exists.
 
@@ -32,10 +32,10 @@ project and now it exists.
 
 Heck yeah there is. Check out the
 [open source code](https://github.com/lubecjac/Q) and fork the project. Create a
-feature branch, and whenever you think your code is ready, I'll check it out.
-If everything passes inspection, it'll be merged into the master branch. You can
-find a bit more info on the actual project page, so definitely go there if
-you're interested.
+feature branch, and whenever you think your code is ready, make a pull request
+and I'll check it out. If everything passes inspection, it'll be merged into the
+master branch. You can find a bit more info on the actual project page, so
+definitely go there if you're interested.
 
 
 ## Thanks for checking it out!
