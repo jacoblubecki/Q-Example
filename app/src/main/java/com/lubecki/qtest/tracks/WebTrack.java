@@ -23,7 +23,8 @@
 
 package com.lubecki.qtest.tracks;
 
-import com.lubecki.q.QTrack;
+import com.jlubecki.q.MediaType;
+import com.jlubecki.q.QTrack;
 
 /**
  * Implementation of {@link QTrack} that we can use to reference our web media URI.
@@ -34,13 +35,15 @@ public class WebTrack extends QTrack {
 
   public WebTrack(int i) {
     title = "Test";
-    artist = "Test";
+    artist = "Test Artist";
 
     // This is really bad code but it still gets the point across
     uri = i == 1
         ? "http://www.looperman.com/media/loops/1664947/looperman-l-1664947-0088802-dubstepmiddle-dnb-kicks.mp3"
         : "https://wiki.teamfortress.com/w/images/3/33/Sf12_found05.wav";
-    image =
+    imagePath =
         "http://pre07.deviantart.net/f338/th/pre/f/2012/306/2/f/merasmus_by_nastyov-d5jqosc.png";
+
+    mediaType = MediaType.AUDIO;
   }
 }

@@ -24,8 +24,8 @@
 package com.lubecki.qtest;
 
 import android.util.Log;
-import com.lubecki.q.logging.DefaultLog;
-import com.lubecki.q.logging.QLog;
+import com.jlubecki.q.logging.DefaultLog;
+import com.jlubecki.q.logging.QLog;
 
 /**
  * Now the Q will log everything using Android's {@link Log} implementation. The majority of logging

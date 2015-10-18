@@ -25,9 +25,9 @@ package com.lubecki.qtest.players;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import com.lubecki.q.playback.Player;
-import com.lubecki.q.playback.PlayerEventCallback;
-import com.lubecki.q.playback.PlayerState;
+import com.jlubecki.q.playback.Player;
+import com.jlubecki.q.playback.PlayerEventCallback;
+import com.jlubecki.q.playback.PlayerState;
 import java.io.IOException;
 
 /**

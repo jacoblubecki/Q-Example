@@ -25,9 +25,9 @@ package com.lubecki.qtest.players;
 
 import android.media.AudioManager;
 import android.media.MediaPlayer;
-import com.lubecki.q.playback.Player;
-import com.lubecki.q.playback.PlayerEventCallback;
-import com.lubecki.q.playback.PlayerState;
+import com.jlubecki.q.playback.Player;
+import com.jlubecki.q.playback.PlayerEventCallback;
+import com.jlubecki.q.playback.PlayerState;
 import java.io.IOException;
 
 /**
@@ -45,6 +45,7 @@ public class WebAudioPlayerSimple extends Player {
 
   @Override public void prepare(String s) {
     try {
+      changeState(PlayerState.PREPARING);
       player.reset();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
       player.setDataSource(s);
@@ -59,7 +60,6 @@ public class WebAudioPlayerSimple extends Player {
           notifyIfTrackEnded();
         }
       });
-      changeState(PlayerState.PREPARING);
       player.prepareAsync();
     } catch (IOException e) {
       e.printStackTrace();
@@ -68,6 +68,7 @@ public class WebAudioPlayerSimple extends Player {
 
   @Override public void justPrepare(String s) {
     try {
+      changeState(PlayerState.PREPARING);
       player.reset();
       player.setAudioStreamType(AudioManager.STREAM_MUSIC);
       player.setDataSource(s);
@@ -83,7 +84,6 @@ public class WebAudioPlayerSimple extends Player {
           notifyIfTrackEnded();
         }
       });
-      changeState(PlayerState.PREPARING);
       player.prepareAsync();
     } catch (IOException e) {
       e.printStackTrace();

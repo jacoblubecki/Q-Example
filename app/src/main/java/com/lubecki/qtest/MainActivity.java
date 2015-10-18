@@ -24,6 +24,9 @@
 package com.lubecki.qtest;
 
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.media.MediaMetadataRetriever;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.MediaStore;
@@ -32,40 +35,51 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.SeekBar;
 import android.widget.TextView;
-import com.lubecki.q.Loop;
-import com.lubecki.q.Q;
-import com.lubecki.q.QEventListener;
-import com.lubecki.q.QState;
-import com.lubecki.q.QTrack;
-import com.lubecki.q.logging.LogLevel;
-import com.lubecki.q.logging.QLog;
 
-import com.lubecki.q.playback.Player;
-import com.lubecki.q.playback.PlayerEventCallback;
-import com.lubecki.q.playback.PlayerManager;
-import com.lubecki.q.playback.PlayerState;
-
+import android.widget.VideoView;
+import com.jlubecki.q.Loop;
+import com.jlubecki.q.MediaType;
+import com.jlubecki.q.Q;
+import com.jlubecki.q.QEventListener;
+import com.jlubecki.q.QState;
+import com.jlubecki.q.QTrack;
+import com.jlubecki.q.logging.LogLevel;
+import com.jlubecki.q.logging.QLog;
+import com.jlubecki.q.playback.Player;
+import com.jlubecki.q.playback.PlayerEventCallback;
+import com.jlubecki.q.playback.PlayerManager;
+import com.jlubecki.q.playback.PlayerState;
 import com.lubecki.qtest.players.WebAudioPlayerSimple;
+import com.lubecki.qtest.players.WebVideoPlayerSimple;
 import com.lubecki.qtest.tracks.WebTrack;
 import com.lubecki.qtest.players.FileAudioPlayerSimple;
 import com.lubecki.qtest.tracks.LocalTrack;
+import com.lubecki.qtest.tracks.WebVideoTrack;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
 
   private Loop currentLoop = Loop.NONE;
   private boolean shuffling = false;
+  private boolean resumeOnSeekFinsihed = false;
 
   private ArrayList<QTrack> trackList = new ArrayList<>();
 
   private ListView list;
-  private TextView text1;
-  private TextView text2;
-  private TextView text3;
+  private TextView loopShuffleInfo;
+  private TextView trackInfo;
+  private TextView timeInfo;
   private SeekBar seek;
+  private FrameLayout frame;
+  private VideoView videoView;
+  private ImageView imageView;
 
   //region Q related callbacks
 
@@ -83,10 +97,28 @@ public class MainActivity extends AppCompatActivity {
         // player events.
       }
     }
+
+    @Override public void onMediaTypeChanged(MediaType mediaType) {
+      // This is just a demo of why the callback is needed, there is probably a more elegant
+      // solution, but for now we'll just programmatically change the view
+      frame.removeAllViews();
+
+      // the individual track types only specify these two MediaTypes so I'm not worrying about
+      // others
+      switch (mediaType) {
+        case AUDIO:
+          frame.addView(imageView);
+          break;
+
+        case VIDEO:
+          frame.addView(videoView);
+          break;
+      }
+    }
   };
   private PlayerEventCallback callback = new PlayerEventCallback() {
     @Override public void onEvent(PlayerState playerState, String s) {
-      text1.setText(String.format("Shuffling: %s\nLooping: %s", shuffling, currentLoop));
+      loopShuffleInfo.setText(String.format("Shuffling: %s\nLooping: %s", shuffling, currentLoop));
 
       // The players will fire off CREATED callbacks when they are created. If we create the players
       // before the Q, we'll get a null pointer. Not very attractive, but easy to deal with.
@@ -97,12 +129,21 @@ public class MainActivity extends AppCompatActivity {
           case PLAYING:
             // update the SeekBar with the duration of the currently playing song
             seek.setMax(player.getDuration());
+            updateImage();
 
             handler.postDelayed(moveSeekBarThread, 100);
             break;
 
+          case PAUSED:
+            // update the SeekBar with the duration of the currently paused song
+            seek.setMax(player.getDuration());
+            updateImage();
+            break;
+
           case PREPARED:
             music.play(); // begin playback when a player is prepared
+            // update the SeekBar with the duration of the currently playing song
+            seek.setMax(player.getDuration());
             break;
 
           case STOPPED:
@@ -114,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
 
           case TRACK_ENDED:
             music.next(); // move to the next track when a track ends
+            updateImage();
             break;
         }
 
@@ -161,10 +203,15 @@ public class MainActivity extends AppCompatActivity {
   private void prepareViews() {
 
     list = (ListView) findViewById(R.id.listView);
-    text1 = (TextView) findViewById(R.id.text1);
-    text2 = (TextView) findViewById(R.id.text2);
-    text3 = (TextView) findViewById(R.id.text3);
+    loopShuffleInfo = (TextView) findViewById(R.id.loopShuffleInfo);
+    trackInfo = (TextView) findViewById(R.id.trackInfo);
+    timeInfo = (TextView) findViewById(R.id.timeInfo);
     seek = (SeekBar) findViewById(R.id.seekBar);
+    frame = (FrameLayout) findViewById(R.id.frame);
+    videoView = new VideoView(this);
+    imageView = new ImageView(this);
+
+    ImageLoader.getInstance().init(ImageLoaderConfiguration.createDefault(getBaseContext()));
 
     seek.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
       @Override public void onProgressChanged(SeekBar seekBar, int milliseconds, boolean b) {
@@ -173,23 +220,26 @@ public class MainActivity extends AppCompatActivity {
       }
 
       @Override public void onStartTrackingTouch(SeekBar seekBar) {
+
+        resumeOnSeekFinsihed =
+            PlayerManager.getInstance().getCurrentPlayer().getState() != PlayerState.PAUSED;
+
         // pause the music if we start seeking
-        PlayerState state = PlayerManager.getInstance().getCurrentPlayer().getState();
-        if (state == PlayerState.PLAYING && state != PlayerState.PREPARING) {
+        if(resumeOnSeekFinsihed) {
           music.pause();
         }
       }
 
       @Override public void onStopTrackingTouch(SeekBar seekBar) {
-        PlayerState state = PlayerManager.getInstance().getCurrentPlayer().getState();
-
         // seek to the desired time
         music.seekTo(seekBar.getProgress());
 
         // resume playback
-        if (state == PlayerState.PAUSED) {
+        if (resumeOnSeekFinsihed) {
           music.play();
         }
+
+        updateUi(PlayerManager.getInstance().getCurrentPlayer(), music.getCurrent());
       }
     });
   }
@@ -207,6 +257,8 @@ public class MainActivity extends AppCompatActivity {
         getContentResolver().query(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, projection,
             selection, null, null);
 
+    MediaMetadataRetriever mmr = new MediaMetadataRetriever();
+
     // Add local tracks
     if (cursor != null) {
       while (cursor.moveToNext()) {
@@ -218,9 +270,12 @@ public class MainActivity extends AppCompatActivity {
 
         track.title = cursor.getString(2);
         track.artist = cursor.getString(1);
-        track.image = null;
+        track.imagePath = null;
         track.uri = cursor.getString(3);
 
+        mmr.setDataSource(track.uri);
+
+        track.imageData = mmr.getEmbeddedPicture();
         Log.i("MAIN", track.uri);
 
         if (track.uri.endsWith(".wav") || track.uri.endsWith(".mp3")) {
@@ -236,9 +291,15 @@ public class MainActivity extends AppCompatActivity {
     // Add web tracks
     for (int i = 0; i <= 1; i++) {
       WebTrack track = new WebTrack(i);
-      track.title += i;
+      track.title += " " + i;
+      track.artist += " " + i;
+
+      WebVideoTrack webVideoTrack = new WebVideoTrack();
+      webVideoTrack.title += " " + i;
+      webVideoTrack.artist += " " + i;
 
       trackList.add(track);
+      trackList.add(webVideoTrack);
     }
 
     ArrayList<String> titles = new ArrayList<>();
@@ -269,6 +330,7 @@ public class MainActivity extends AppCompatActivity {
     // for both of them
     WebAudioPlayerSimple web = new WebAudioPlayerSimple(callback);
     FileAudioPlayerSimple local = new FileAudioPlayerSimple(callback);
+    WebVideoPlayerSimple webVideo = new WebVideoPlayerSimple(callback, videoView);
 
     music = Q.getInstance();
     music.setListener(qEventListener);
@@ -276,6 +338,7 @@ public class MainActivity extends AppCompatActivity {
     // We don't really need 2 track types, only difference is the URI_PATTERN constant
     music.addPlayer(WebTrack.URI_PATTERN, web); // pattern = "http(.*)(.mp3|.wav)"
     music.addPlayer(LocalTrack.URI_PATTERN, local); // pattern = "\\/storage(.*)(.mp3|.wav)"
+    music.addPlayer(WebVideoTrack.URI_PATTERN, webVideo); // pattern = "http(.*).mp4"
 
     // Add tracks
     music.setTrackList(trackList);
@@ -291,7 +354,7 @@ public class MainActivity extends AppCompatActivity {
     // Don't update the UI if the track list is empty, nothing to update.
     if (track != null) {
 
-      text2.setText(String.format("%s\n%s\nPlayer: %s", track.title, track.artist,
+      trackInfo.setText(String.format("%s\n%s\nPlayer: %s", track.title, track.artist,
           player.getClass().getSimpleName()));
 
       time = player.getCurrentTime();
@@ -309,8 +372,27 @@ public class MainActivity extends AppCompatActivity {
       int remainingDurSeconds = dur - durMinutes * 60;
 
       seek.setProgress(time);
-      text3.setText(String.format("%d:%02d / %d:%02d", minutes, remainingSeconds, durMinutes,
+      timeInfo.setText(String.format("%d:%02d / %d:%02d", minutes, remainingSeconds, durMinutes,
           remainingDurSeconds));
+    }
+  }
+
+  private void updateImage() {
+    if(music.getCurrent().mediaType == MediaType.AUDIO) {
+      String imagePath = music.getCurrent().imagePath;
+      byte[] imageData = music.getCurrent().imageData;
+
+      if (imagePath != null) {
+        ImageLoader.getInstance().displayImage(imagePath, imageView);
+      } else {
+        if (imageData != null) {
+          Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);
+          imageView.setImageBitmap(bitmap);
+        } else {
+          imageView.setImageBitmap(
+              BitmapFactory.decodeResource(getResources(), R.mipmap.ic_launcher));
+        }
+      }
     }
   }
 
@@ -333,7 +415,7 @@ public class MainActivity extends AppCompatActivity {
     if (playerState == PlayerState.PAUSED || playerState == PlayerState.CREATED
         || playerState == PlayerState.STOPPED) {
       music.play();
-    } else if (playerState == PlayerState.PLAYING) {
+    } else {
       music.pause();
     }
   }
@@ -360,7 +442,7 @@ public class MainActivity extends AppCompatActivity {
       shuffling = true;
     }
 
-    text1.setText(String.format("Shuffling: %s%nLooping: %s", shuffling, currentLoop));
+    loopShuffleInfo.setText(String.format("Shuffling: %s%nLooping: %s", shuffling, currentLoop));
   }
 
   public void loop(View view) {
@@ -383,7 +465,7 @@ public class MainActivity extends AppCompatActivity {
         break;
     }
 
-    text1.setText(String.format("Shuffling: %s\nLooping: %s", shuffling, currentLoop));
+    loopShuffleInfo.setText(String.format("Shuffling: %s\nLooping: %s", shuffling, currentLoop));
   }
 
   //endregion
